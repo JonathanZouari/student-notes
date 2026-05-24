@@ -62,4 +62,5 @@ Follow these steps to submit your contribution:
 
 ---
 
+
 *Thank you for making student-notes better for everyone!* 🎓
