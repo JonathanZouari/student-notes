@@ -58,6 +58,8 @@ Follow these steps to submit your contribution:
 
 > 💡 **New to open source?** Check out the [Issues](../../issues) tab — look for labels like `good first issue` to find a great starting point!
 
+[👥 Contributors](./contributors.md)
+
 ---
 
 *Thank you for making student-notes better for everyone!* 🎓
