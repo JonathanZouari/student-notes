@@ -1,6 +1,7 @@
 # student-notes
 אפליקציית ניהול הערות לסטודנטים
 [👥 תורמים](./contributors.md)
+
 feat: add contributors.md and link from README
 
 - Add contributors.md with table of 4 project contributors
