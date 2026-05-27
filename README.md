@@ -1,6 +1,5 @@
-# student-notes
+# 📚 student-notes | גרסה 2.0
+
 אפליקציית ניהול הערות לסטודנטים
-feature/add-contributors-page
-היי אני רוצה ליצור קונפליקט
+
 [👥 תורמים](./contributors.md)
-main
