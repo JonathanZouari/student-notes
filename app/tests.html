@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <title>בדיקות ניקוד</title>
+  <style>
+    body { font-family: "Segoe UI", system-ui, sans-serif; padding: 16px; }
+    .pass { color: #15803d; } .fail { color: #b42318; font-weight: 700; }
+  </style>
+</head>
+<body>
+  <h1>בדיקות לחוקי הניקוד</h1>
+  <ul id="results"></ul>
+  <p id="summary"></p>
+  <script src="points.js"></script>
+  <script>
+    const P = window.Points;
+    const results = [];
+    function test(name, fn) {
+      try { fn(); results.push({ name, ok: true }); }
+      catch (e) { results.push({ name, ok: false, msg: e.message }); }
+    }
+    function eq(actual, expected) {
+      if (actual !== expected) throw new Error(`expected ${expected}, got ${actual}`);
+    }
+    // Saturday, Nov 7 2026, 15:00 local time
+    const SAT = new Date(2026, 10, 7, 15);
+
+    test('הערה חדשה = 10, תיקון מאושר = 5', () => {
+      eq(P.createEvent([], { userId: 1, type: 'note_created', noteId: 1, date: SAT }).points, 10);
+      eq(P.createEvent([], { userId: 1, type: 'fix_approved', noteId: 1, noteOwnerId: 2, date: SAT }).points, 5);
+    });
+
+    test('תקרה יומית של 100 נקודות', () => {
+      const ev = [];
+      for (let i = 0; i < 11; i++) ev.push(P.createEvent(ev, { userId: 1, type: 'note_created', noteId: i, date: SAT }));
+      eq(P.totalPoints(ev, 1), 100);
+      eq(ev[10].points, 0);
+    });
+
+    test('מתקרבים לתקרה: מקבלים רק את מה שנשאר', () => {
+      const ev = [];
+      for (let i = 0; i < 9; i++) ev.push(P.createEvent(ev, { userId: 1, type: 'note_created', noteId: i, date: SAT }));
+      ev.push(P.createEvent(ev, { userId: 1, type: 'fix_approved', noteId: 50, noteOwnerId: 2, date: SAT }));
+      eq(P.createEvent(ev, { userId: 1, type: 'note_created', noteId: 99, date: SAT }).points, 5);
+    });
+
+    test('התקרה מתאפסת ביום חדש', () => {
+      const ev = [];
+      for (let i = 0; i < 10; i++) ev.push(P.createEvent(ev, { userId: 1, type: 'note_created', noteId: i, date: SAT }));
+      eq(P.createEvent(ev, { userId: 1, type: 'note_created', noteId: 20, date: new Date(2026, 10, 8, 9) }).points, 10);
+    });
+
+    test('התקרה נפרדת לכל משתמש', () => {
+      const ev = [];
+      for (let i = 0; i < 10; i++) ev.push(P.createEvent(ev, { userId: 1, type: 'note_created', noteId: i, date: SAT }));
+      eq(P.createEvent(ev, { userId: 2, type: 'note_created', noteId: 20, date: SAT }).points, 10);
+    });
+
+    test('אין נקודות על תיקון להערה שלך', () => {
+      eq(P.createEvent([], { userId: 1, type: 'fix_approved', noteId: 1, noteOwnerId: 1, date: SAT }).points, 0);
+    });
+
+    test('אין נקודות על הערה קצרה מ-50 תווים', () => {
+      eq(P.createEvent([], { userId: 1, type: 'note_created', noteId: 1, contentLength: 49, date: SAT }).points, 0);
+      eq(P.createEvent([], { userId: 1, type: 'note_created', noteId: 1, contentLength: 50, date: SAT }).points, 10);
+    });
+
+    test('ביטול מוריד נקודות מהסכום', () => {
+      const ev = [{ user_id: 1, points: 10, created_at: SAT.toISOString() }, { user_id: 1, points: -10, created_at: SAT.toISOString() }];
+      eq(P.totalPoints(ev, 1), 0);
+    });
+
+    test('רמות: 0 / 99 / 100 / 499 / 500', () => {
+      eq(P.levelFor(0).name, 'מתחיל');
+      eq(P.levelFor(99).name, 'מתחיל');
+      eq(P.levelFor(100).name, 'פעיל');
+      eq(P.levelFor(499).name, 'פעיל');
+      eq(P.levelFor(500).name, 'מומחה');
+      eq(P.levelFor(500).next, null);
+      eq(P.levelFor(120).next.min, 500);
+    });
+
+    test('השבוע מתחיל ביום ראשון בחצות', () => {
+      eq(P.weekStart(SAT).getTime(), new Date(2026, 10, 1).getTime());
+      eq(P.weekStart(new Date(2026, 10, 1, 0, 5)).getTime(), new Date(2026, 10, 1).getTime());
+    });
+
+    test('ניקוד שבועי לא כולל את השבוע הקודם', () => {
+      const ev = [
+        { user_id: 1, points: 10, created_at: new Date(2026, 10, 2, 10).toISOString() },
+        { user_id: 1, points: 5, created_at: new Date(2026, 9, 31, 23).toISOString() },
+      ];
+      eq(P.weeklyPoints(ev, 1, SAT), 10);
+    });
+
+    test('לוח מובילים: מיון ודירוג משותף בתיקו', () => {
+      const users = [{ id: 1, name: 'א' }, { id: 2, name: 'ב' }, { id: 3, name: 'ג' }];
+      const ev = [
+        { user_id: 1, points: 10, created_at: SAT.toISOString() },
+        { user_id: 2, points: 20, created_at: SAT.toISOString() },
+        { user_id: 3, points: 10, created_at: SAT.toISOString() },
+      ];
+      const rows = P.leaderboard(users, ev, { period: 'all', now: SAT });
+      eq(rows.map((r) => r.user.id + ':' + r.rank).join(','), '2:1,1:2,3:2');
+    });
+
+    const failed = results.filter((r) => !r.ok).length;
+    document.getElementById('results').innerHTML = results.map((r) =>
+      `<li class="${r.ok ? 'pass' : 'fail'}">${r.ok ? 'PASS' : 'FAIL'} – ${r.name}${r.ok ? '' : ': ' + r.msg}</li>`).join('');
+    document.getElementById('summary').textContent = `RESULT: ${results.length - failed} passed, ${failed} failed`;
+  </script>
+</body>
+</html>
