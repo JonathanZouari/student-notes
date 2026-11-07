@@ -1,6 +1,6 @@
 # Student Notes – App Documentation
 
-Student Notes is a web app where students keep their course notes and talk with their lecturers and classmates. The interface is in Hebrew (right-to-left).
+Student Notes issssssssssssssss a web app where students keep their course notes and talk with their lecturers and classmates. The interface is in Hebrew (right-to-left).
 
 It runs on **Python 3 only**: the server uses the standard library (`http.server` + `sqlite3`), and the front end is plain HTML, CSS and JavaScript. Nothing needs to be installed.
 
