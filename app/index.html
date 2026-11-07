@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>לוח ניקוד | Student Notes</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="top">
+    <div class="wrap">
+      <p class="eyebrow">Student Notes</p>
+      <h1>לוח ניקוד</h1>
+      <p class="sub">כמה נקודות צבר כל סטודנט על הערות ותיקונים</p>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="rules" aria-label="חוקי ניקוד">
+      <div class="rule"><span class="rule-pts" dir="ltr">+10</span><span>הערה חדשה</span></div>
+      <div class="rule"><span class="rule-pts" dir="ltr">+5</span><span>תיקון מאושר</span></div>
+      <div class="rule"><span class="rule-pts" dir="ltr">100</span><span>תקרה יומית</span></div>
+    </section>
+
+    <div class="layout">
+      <section class="card board">
+        <div class="board-head">
+          <h2>לוח מובילים</h2>
+          <div class="tabs" role="tablist">
+            <button role="tab" data-period="week" aria-selected="true">השבוע</button>
+            <button role="tab" data-period="all" aria-selected="false">כל הזמנים</button>
+          </div>
+        </div>
+        <ol id="leaderboard" class="rows"></ol>
+      </section>
+
+      <aside class="card profile" id="profile" aria-live="polite"></aside>
+    </div>
+
+    <p class="foot">נתוני דוגמה. נקודות שמוסיפים נשמרות רק עד שמרעננים את העמוד.</p>
+  </main>
+
+  <div id="toast" class="toast" role="status"></div>
+
+  <script src="points.js"></script>
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
