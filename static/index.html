@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Student Notes</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <!-- מסך התחברות -->
+  <section id="login-view" class="login hidden">
+    <form id="login-form" class="login-card">
+      <h1>📚 Student Notes</h1>
+      <p class="muted">התחברו כדי לגשת לסיכומים ולשיחות שלכם</p>
+      <label>שם משתמש<input name="username" autocomplete="username" required></label>
+      <label>סיסמה<input name="password" type="password" autocomplete="current-password" required></label>
+      <button class="btn primary" type="submit">כניסה</button>
+      <p id="login-error" class="error"></p>
+      <details class="demo">
+        <summary>משתמשי דמו (סיסמה: 1234)</summary>
+        <p>סטודנטים: <code>dana</code>, <code>yossi</code>, <code>noa</code><br>
+           מרצים: <code>dr.katz</code>, <code>prof.levin</code><br>
+           ניהול: <code>admin</code></p>
+      </details>
+    </form>
+  </section>
+
+  <!-- האפליקציה -->
+  <section id="app-view" class="app hidden">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand">📚 Student Notes</div>
+      <div class="me">
+        <div id="me-name" class="me-name"></div>
+        <div id="me-role" class="muted small"></div>
+      </div>
+      <nav id="tree" class="tree"></nav>
+      <button id="logout" class="btn ghost">התנתקות</button>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <button id="menu-btn" class="btn ghost menu-btn" aria-label="תפריט">☰</button>
+        <div>
+          <div id="crumb" class="muted small"></div>
+          <h2 id="course-title">בחרו קורס מהתפריט</h2>
+          <div id="course-sub" class="muted small"></div>
+        </div>
+      </header>
+
+      <div id="tabs" class="tabs hidden"></div>
+      <div id="panel" class="panel">
+        <div class="empty">
+          <div class="empty-icon">🗂️</div>
+          <p>הספרייה שלך מסודרת לפי שנים, ובכל שנה הקורסים שאת/ה רשום/ה אליהם.<br>בחרו קורס כדי להתחיל.</p>
+        </div>
+      </div>
+    </main>
+  </section>
+
+  <script src="/app.js"></script>
+</body>
+</html>
